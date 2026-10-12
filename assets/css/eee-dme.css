@@ -1,0 +1,482 @@
+/* ═══════════════════════════════════════════════════════════════
+   eee-dme.css — Atjaunoto daudzdzīvokļu ēku dati energoefektivakaeka.lv dizainā
+
+   Dizaina tokeni izvilkti no reālās energoefektivakaeka.lv (picostrap5 bundle.css
+   :root + wp-custom-css). Galvenes/kājenes/utility klases tīši SAGLABĀ viņu
+   oriģinālos nosaukumus (.orange-btn, .green, .d-green, .lc-nav-menu, .bg-footer),
+   lai lapu vēlāk varētu ielikt viņu WordPress vidē bez pārrakstīšanas.
+   Jaunās, tikai šai lapai specifiskās klases lieto `eee-` prefiksu.
+
+   Prasa Bootstrap 5.3 (režģis + utilities) pirms šī faila.
+   Tikai gaišā tēma — energoefektivakaeka.lv tumšo režīmu neizmanto.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --eee-green-dark:   #20542b;  /* virsraksti, navigācija, kājenes fons */
+  --eee-green:        #7cb33e;  /* .green util klase, sociālo ikonu apmales */
+  --eee-green-light:  #81b544;  /* saites, plānās līnijas */
+  --eee-green-bright: #65bf3b;  /* Bootstrap --bs-success */
+  --eee-green-subtle: #e0f2d8;  /* čipu un izcēlumu fons */
+  --eee-orange:       #f15025;  /* CTA pogas, hover visām saitēm */
+  --eee-text:         #000000;
+  --eee-muted:        rgba(0, 0, 0, 0.62);
+  --eee-bg:           #ffffff;
+  --eee-bg-soft:      #f6f8f4;
+  --eee-border:       #dfe4d9;
+  --eee-radius:       0.375rem;
+  --eee-font:         'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ─── Bāze ─── */
+body {
+  font-family: var(--eee-font);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--eee-text);
+  background: var(--eee-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--eee-font);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--eee-green-dark);
+}
+
+a { color: var(--eee-green-light); }
+a:hover { color: var(--eee-orange); }
+
+/* ─── energoefektivakaeka.lv utility klases (kopētas 1:1) ─── */
+.green   { color: var(--eee-green); }
+.d-green { color: var(--eee-green-dark); }
+.fw-300 { font-weight: 300; }
+.fw-400 { font-weight: 400; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+.td-none { text-decoration: none; }
+
+.orange-btn {
+  display: inline-block;
+  background-color: var(--eee-orange);
+  border: 1px solid var(--eee-orange);
+  border-radius: 30px;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 16px 32px;
+  text-decoration: none;
+  transition: 0.2s ease-in-out;
+}
+.orange-btn:hover {
+  background-color: #ffffff;
+  border-color: var(--eee-orange);
+  color: var(--eee-orange);
+}
+
+/* ─── Galvene ─── */
+#lc-header {
+  background: var(--eee-bg);
+  border-bottom: 1px solid var(--eee-border);
+}
+
+.lc-nav-menu .navbar-nav { gap: 0.25rem; }
+
+.lc-nav-menu a {
+  color: var(--eee-green-dark);
+  font-size: 18px;
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.lc-nav-menu a:hover,
+.lc-nav-menu .nav-link.active { color: var(--eee-orange) !important; }
+
+.navbar-socials a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+  border: 1px solid var(--eee-green);
+  border-radius: 100px;
+  transition: 0.3s ease-in-out;
+}
+.navbar-socials a svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--eee-green);
+  transition: 0.3s ease-in-out;
+}
+.navbar-socials a:hover { transform: scale(1.1); border-color: var(--eee-orange); }
+.navbar-socials a:hover svg { fill: var(--eee-orange); }
+
+.navbar-toggler {
+  border: none;
+  color: var(--eee-green-dark);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  align-items: center;
+  gap: 2px;
+}
+.navbar-toggler:focus { box-shadow: none; }
+.navbar-toggler svg { width: 26px; height: 26px; fill: var(--eee-green-dark); }
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--eee-green-dark);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  align-items: center;
+  gap: 2px;
+}
+.modal-close svg { width: 26px; height: 26px; fill: var(--eee-green-dark); }
+
+/* ─── Lapas galva ─── */
+.eee-pagehead {
+  background: var(--eee-green-subtle);
+  border-bottom: 1px solid var(--eee-border);
+  padding: 48px 0 44px;
+}
+
+.eee-pagehead h1 {
+  font-size: calc(1.5rem + 1.6vw);
+  margin-bottom: 1rem;
+}
+@media (min-width: 1200px) {
+  .eee-pagehead h1 { font-size: 2.5rem; }
+}
+
+.eee-lead {
+  font-size: 1rem;
+  color: var(--eee-muted);
+  max-width: 62ch;
+}
+
+.eee-badge {
+  display: inline-block;
+  background: var(--eee-green-dark);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 3px 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ─── Kartītes ─── */
+.eee-card {
+  background: var(--eee-bg);
+  border: 1px solid var(--eee-border);
+  border-radius: var(--eee-radius);
+  padding: 20px;
+  height: 100%;
+}
+
+.eee-card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.eee-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.eee-hint {
+  font-size: 0.8125rem;
+  color: var(--eee-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+/* ─── Filtri ─── */
+.eee-filters { background: var(--eee-bg-soft); }
+
+.eee-filter-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--eee-green-dark);
+  margin-bottom: 6px;
+}
+
+.eee-input {
+  width: 100%;
+  font-family: var(--eee-font);
+  font-size: 0.9375rem;
+  color: var(--eee-text);
+  background: var(--eee-bg);
+  border: 1px solid var(--eee-border);
+  border-radius: var(--eee-radius);
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.eee-input:focus {
+  border-color: var(--eee-green-light);
+  box-shadow: 0 0 0 3px rgba(129, 181, 68, 0.2);
+}
+
+.eee-reset {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: var(--eee-font);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--eee-green-dark);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.eee-reset:hover { color: var(--eee-orange); }
+
+/* ─── KPI ─── */
+.eee-kpi {
+  background: var(--eee-bg);
+  border: 1px solid var(--eee-border);
+  border-top: 3px solid var(--eee-green-bright);
+  border-radius: var(--eee-radius);
+  padding: 18px 20px;
+  height: 100%;
+}
+
+.eee-kpi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--eee-muted);
+  margin-bottom: 8px;
+  min-height: 2.4em;
+}
+
+.eee-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--eee-green-dark);
+}
+
+.eee-kpi-sub {
+  font-size: 0.8125rem;
+  color: var(--eee-muted);
+  margin-top: 4px;
+  min-height: 1.2em;
+}
+
+/* ─── Grafiki un karte ─── */
+.eee-chart-wrap { position: relative; height: 320px; }
+.eee-chart-tall { height: 460px; }
+
+.eee-map {
+  height: 100%;
+  width: 100%;
+  border-radius: var(--eee-radius);
+  z-index: 0;
+}
+
+.eee-map-note {
+  font-size: 0.8125rem;
+  color: var(--eee-muted);
+}
+
+.eee-map-popup { font-family: var(--eee-font); font-size: 13px; line-height: 1.5; }
+.eee-map-popup strong { display: block; color: var(--eee-green-dark); margin-bottom: 4px; }
+.eee-map-popup a { color: var(--eee-green-light); font-weight: 600; }
+
+/* ─── Tabula ─── */
+.eee-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--eee-border);
+  border-radius: var(--eee-radius);
+}
+
+.eee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.eee-table th,
+.eee-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--eee-border);
+  text-align: left;
+}
+
+.eee-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--eee-green-dark);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: none;
+  z-index: 1;
+}
+
+.eee-table thead th[data-sort] { cursor: pointer; user-select: none; }
+.eee-table thead th[data-sort]:hover { color: var(--eee-green-bright); }
+.eee-table thead th.sorted::after { content: ' ▾'; font-size: 0.7rem; }
+.eee-table thead th.sorted.asc::after { content: ' ▴'; }
+
+.eee-table tbody tr:nth-child(even) { background: var(--eee-bg-soft); }
+.eee-table tbody tr:hover { background: var(--eee-green-subtle); }
+
+.eee-num { text-align: right !important; font-variant-numeric: tabular-nums; }
+
+.eee-addr { white-space: normal; min-width: 190px; }
+.eee-addr a { color: var(--eee-green-dark); font-weight: 600; text-decoration: none; }
+.eee-addr a:hover { color: var(--eee-orange); text-decoration: underline; }
+
+.eee-empty-row td {
+  text-align: center;
+  padding: 32px 12px;
+  color: var(--eee-muted);
+}
+
+.eee-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 0.875rem;
+  color: var(--eee-muted);
+}
+
+.eee-page-btn {
+  font-family: var(--eee-font);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--eee-green-dark);
+  background: var(--eee-bg);
+  border: 1px solid var(--eee-border);
+  border-radius: 999px;
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+.eee-page-btn:hover:not(:disabled) {
+  border-color: var(--eee-orange);
+  color: var(--eee-orange);
+}
+.eee-page-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ─── Ielādes indikators ─── */
+.eee-loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72);
+  z-index: 1500;
+}
+.eee-loading[hidden] { display: none; }
+
+.eee-loading-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--eee-bg);
+  border: 1px solid var(--eee-border);
+  border-radius: var(--eee-radius);
+  padding: 16px 24px;
+  font-weight: 500;
+  color: var(--eee-green-dark);
+}
+
+.eee-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--eee-green-subtle);
+  border-top-color: var(--eee-green-bright);
+  border-radius: 50%;
+  animation: eee-spin 0.8s linear infinite;
+}
+
+@keyframes eee-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .eee-spinner { animation-duration: 3s; }
+}
+
+/* ─── Kļūdas paziņojums ─── */
+.eee-error {
+  background: #fdece8;
+  border: 1px solid var(--eee-orange);
+  border-radius: var(--eee-radius);
+  color: #8a2b10;
+  padding: 16px 20px;
+}
+
+/* ─── Kājene ─── */
+#footer {
+  background: var(--eee-green-dark);
+  color: #ffffff;
+}
+#footer a { color: #ffffff; }
+#footer a:hover { color: var(--eee-orange); }
+#footer .lc-nav-menu a { color: #ffffff; }
+#footer .lc-nav-menu a:hover { color: var(--eee-orange) !important; }
+
+#footer .navbar-socials a { border-color: #ffffff; }
+#footer .navbar-socials a svg { fill: #ffffff; }
+#footer .navbar-socials a:hover { border-color: var(--eee-orange); }
+#footer .navbar-socials a:hover svg { fill: var(--eee-orange); }
+
+.bg-footer {
+  background-image: url('../img/footer-pic.webp');
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  /* Ilustrācija samazināta pret oriģinālu, jo šai lapai kājenē ir vairāk teksta
+     nekā energoefektivakaeka.lv sākumlapā — citādi teksts uzskrietu virsū attēlam. */
+  background-size: auto 72%;
+}
+@media (max-width: 991.98px) {
+  .bg-footer {
+    background-position: bottom center;
+    background-size: contain;
+    padding-bottom: 180px;
+  }
+}
+
+
+.eee-footer-note {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 52ch;
+}
+
+/* ─── Responsīvs ─── */
+@media (max-width: 767.98px) {
+  .eee-pagehead { padding: 32px 0 28px; }
+  .eee-chart-wrap { height: 260px; }
+  .eee-chart-tall { height: 340px; }
+  .eee-kpi-value { font-size: 1.5rem; }
+  .eee-kpi-label { min-height: 0; }
+  .orange-btn { padding: 13px 26px; }
+}
+
+/* Papildu atstarpe kājenē, lai teksts nepārklājas ar fona ilustrāciju apakšā pa labi */
+.pb-lg-6 { padding-bottom: 2rem; }
+@media (min-width: 992px) {
+  .pb-lg-6 { padding-bottom: 5rem; }
+}
