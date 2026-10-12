@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atjaunotās daudzdzīvokļu ēkas — Energoefektīvāka ēka</title>
+
+  <meta name="description" content="Altum un ES līdzfinansēto daudzdzīvokļu māju energoefektivitātes projekti Latvijā: izmaksas, piešķirtais atbalsts un sasniegtais siltumenerģijas patēriņa ietaupījums pēc ēku atjaunošanas.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 (tā pati bāze, uz kuras balstās energoefektivakaeka.lv) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Lapas dizains -->
+  <link rel="stylesheet" href="assets/css/eee-dme.css">
+
+  <!-- Grafiki + karte -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════ GALVENE ═══════════ -->
+  <header id="lc-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container px-2">
+        <a class="navbar-brand me-1" href="https://energoefektivakaeka.lv/">
+          <img src="assets/img/logo-header.webp" alt="Energoefektīvāka ēka" width="170">
+        </a>
+
+        <button class="navbar-toggler d-flex flex-column d-lg-none" type="button" data-bs-toggle="modal" data-bs-target="#navbarModal" aria-label="Atvērt izvēlni">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"></path></svg>
+          Izvēlne
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end">
+          <div class="me-2 me-xl-4 lc-nav-menu">
+            <ul class="navbar-nav">
+              <li class="nav-item"><a href="https://energoefektivakaeka.lv/par-konkursu/" class="nav-link">Par konkursu</a></li>
+              <li class="nav-item"><a href="https://energoefektivakaeka.lv/2026-gads/" class="nav-link">2026. gads</a></li>
+              <li class="nav-item"><a href="https://energoefektivakaeka.lv/objekti/" class="nav-link">Objekti</a></li>
+              <li class="nav-item"><a href="https://energoefektivakaeka.lv/aktuali/" class="nav-link">Aktuāli</a></li>
+              <li class="nav-item"><a href="https://energoefektivakaeka.lv/kontakti/" class="nav-link">Kontakti</a></li>
+            </ul>
+          </div>
+
+          <div class="navbar-socials d-flex">
+            <a href="https://www.facebook.com/energoefektivaka.eka.Latvija/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 28"><path d="M14.984 0.187v4.125h-2.453c-1.922 0-2.281 0.922-2.281 2.25v2.953h4.578l-0.609 4.625h-3.969v11.859h-4.781v-11.859h-3.984v-4.625h3.984v-3.406c0-3.953 2.422-6.109 5.953-6.109 1.687 0 3.141 0.125 3.563 0.187z"></path></svg></a>
+            <a href="https://twitter.com/siltinam" target="_blank" rel="noopener" aria-label="X"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z"></path></svg></a>
+            <a href="https://www.youtube.com/siltinam" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 44.898438 14.5 C 44.5 12.300781 42.601563 10.699219 40.398438 10.199219 C 37.101563 9.5 31 9 24.398438 9 C 17.800781 9 11.601563 9.5 8.300781 10.199219 C 6.101563 10.699219 4.199219 12.199219 3.800781 14.5 C 3.398438 17 3 20.5 3 25 C 3 29.5 3.398438 33 3.898438 35.5 C 4.300781 37.699219 6.199219 39.300781 8.398438 39.800781 C 11.898438 40.5 17.898438 41 24.5 41 C 31.101563 41 37.101563 40.5 40.601563 39.800781 C 42.800781 39.300781 44.699219 37.800781 45.101563 35.5 C 45.5 33 46 29.398438 46.101563 25 C 45.898438 20.5 45.398438 17 44.898438 14.5 Z M 19 32 L 19 18 L 31.199219 25 Z"></path></svg></a>
+            <a href="https://www.instagram.com/dzivosiltak/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26"><path d="M 7.546875 0 C 3.390625 0 0 3.390625 0 7.546875 L 0 18.453125 C 0 22.609375 3.390625 26 7.546875 26 L 18.453125 26 C 22.609375 26 26 22.609375 26 18.453125 L 26 7.546875 C 26 3.390625 22.609375 0 18.453125 0 Z M 7.546875 2 L 18.453125 2 C 21.527344 2 24 4.46875 24 7.546875 L 24 18.453125 C 24 21.527344 21.53125 24 18.453125 24 L 7.546875 24 C 4.472656 24 2 21.53125 2 18.453125 L 2 7.546875 C 2 4.472656 4.46875 2 7.546875 2 Z M 20.5 4 C 19.671875 4 19 4.671875 19 5.5 C 19 6.328125 19.671875 7 20.5 7 C 21.328125 7 22 6.328125 22 5.5 C 22 4.671875 21.328125 4 20.5 4 Z M 13 6 C 9.144531 6 6 9.144531 6 13 C 6 16.855469 9.144531 20 13 20 C 16.855469 20 20 16.855469 20 13 C 20 9.144531 16.855469 6 13 6 Z M 13 8 C 15.773438 8 18 10.226563 18 13 C 18 15.773438 15.773438 18 13 18 C 10.226563 18 8 15.773438 8 13 C 8 10.226563 10.226563 8 13 8 Z"></path></svg></a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobilā izvēlne -->
+    <div class="modal fade" id="navbarModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header d-flex justify-content-between py-4">
+            <div class="navbar-socials d-flex">
+              <a href="https://www.facebook.com/energoefektivaka.eka.Latvija/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 28"><path d="M14.984 0.187v4.125h-2.453c-1.922 0-2.281 0.922-2.281 2.25v2.953h4.578l-0.609 4.625h-3.969v11.859h-4.781v-11.859h-3.984v-4.625h3.984v-3.406c0-3.953 2.422-6.109 5.953-6.109 1.687 0 3.141 0.125 3.563 0.187z"></path></svg></a>
+              <a href="https://www.instagram.com/dzivosiltak/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26"><path d="M 7.546875 0 C 3.390625 0 0 3.390625 0 7.546875 L 0 18.453125 C 0 22.609375 3.390625 26 7.546875 26 L 18.453125 26 C 22.609375 26 26 22.609375 26 18.453125 L 26 7.546875 C 26 3.390625 22.609375 0 18.453125 0 Z M 7.546875 2 L 18.453125 2 C 21.527344 2 24 4.46875 24 7.546875 L 24 18.453125 C 24 21.527344 21.53125 24 18.453125 24 L 7.546875 24 C 4.472656 24 2 21.53125 2 18.453125 L 2 7.546875 C 2 4.472656 4.46875 2 7.546875 2 Z M 20.5 4 C 19.671875 4 19 4.671875 19 5.5 C 19 6.328125 19.671875 7 20.5 7 C 21.328125 7 22 6.328125 22 5.5 C 22 4.671875 21.328125 4 20.5 4 Z M 13 6 C 9.144531 6 6 9.144531 6 13 C 6 16.855469 9.144531 20 13 20 C 16.855469 20 20 16.855469 20 13 C 20 9.144531 16.855469 6 13 6 Z M 13 8 C 15.773438 8 18 10.226563 18 13 C 18 15.773438 15.773438 18 13 18 C 10.226563 18 8 15.773438 8 13 C 8 10.226563 10.226563 8 13 8 Z"></path></svg></a>
+            </div>
+            <button type="button" class="modal-close d-flex flex-column" data-bs-dismiss="modal" aria-label="Aizvērt">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+              Aizvērt
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="lc-nav-menu">
+              <ul class="navbar-nav">
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/par-konkursu/" class="nav-link">Par konkursu</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/2026-gads/" class="nav-link">2026. gads</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/objekti/" class="nav-link">Objekti</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/aktuali/" class="nav-link">Aktuāli</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/kontakti/" class="nav-link">Kontakti</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ═══════════ LAPAS GALVA ═══════════ -->
+    <section class="eee-pagehead">
+      <div class="container">
+        <h1>Atjaunotās daudzdzīvokļu ēkas Latvijā ar valsts atbalstu</h1>
+        <p class="eee-lead mb-3">
+          ES līdzfinansēto daudzdzīvokļu māju energoefektivitātes projekti:
+          izmaksas, piešķirtais atbalsts un sasniegtais siltumenerģijas patēriņa
+          ietaupījums pēc ēku atjaunošanas.
+        </p>
+        <p class="mb-4"><span class="eee-badge" id="eeeTotalBadge">Ielādē…</span></p>
+      </div>
+    </section>
+
+    <div class="container py-5">
+
+      <div class="eee-error mb-4" id="eeeError" hidden></div>
+
+      <!-- ═══════════ FILTRI ═══════════ -->
+      <div class="eee-card eee-filters mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-lg-4">
+            <label class="eee-filter-label" for="searchInput">Meklē atjaunoto ēku</label>
+            <input id="searchInput" class="eee-input" type="text" placeholder="Adrese vai pilsēta/pagasts…" autocomplete="off">
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <label class="eee-filter-label" for="regionSelect">Reģions</label>
+            <select id="regionSelect" class="eee-input">
+              <option value="">Visi reģioni</option>
+            </select>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <label class="eee-filter-label" for="programSelect">Atbalsta programmas darbības periods</label>
+            <select id="programSelect" class="eee-input">
+              <option value="">Visas programmas</option>
+            </select>
+          </div>
+          <div class="col-12 col-lg-2">
+            <label class="eee-filter-label" for="seriesInput">Sērija</label>
+            <input id="seriesInput" class="eee-input" type="text" placeholder="piem. 103, 316" autocomplete="off">
+          </div>
+        </div>
+        <div class="mt-3">
+          <button id="resetFiltersBtn" class="eee-reset" type="button">Notīrīt visus filtrus</button>
+        </div>
+      </div>
+
+      <!-- ═══════════ KPI ═══════════ -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="eee-kpi">
+            <div class="eee-kpi-label" id="kpiCountLabel">Atjaunotas daudzdzīvokļu ēkas</div>
+            <div class="eee-kpi-value" id="kpiCount">—</div>
+            <div class="eee-kpi-sub" id="kpiCountSub"></div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="eee-kpi">
+            <div class="eee-kpi-label">Vidējais siltumenerģijas ietaupījums</div>
+            <div class="eee-kpi-value" id="kpiAvgSavings">—</div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="eee-kpi">
+            <div class="eee-kpi-label">Vidējais siltumenerģijas patēriņš pēc atjaunošanas</div>
+            <div class="eee-kpi-value" id="kpiAvgAfter">—</div>
+            <div class="eee-kpi-sub" id="kpiAvgAfterSub"></div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="eee-kpi">
+            <div class="eee-kpi-label">Kopējās investīcijas</div>
+            <div class="eee-kpi-value" id="kpiInvestment">—</div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="eee-kpi">
+            <div class="eee-kpi-label">Sniegtais atbalsts</div>
+            <div class="eee-kpi-value" id="kpiGrant">—</div>
+            <div class="eee-kpi-sub" id="kpiGrantShareSub"></div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="eee-kpi">
+            <div class="eee-kpi-label">Atjaunoto ēku platība</div>
+            <div class="eee-kpi-value" id="kpiArea">—</div>
+            <div class="eee-kpi-sub" id="kpiAreaShareSub"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════ KARTE ═══════════ -->
+      <div class="eee-card mb-4">
+        <div class="eee-card-head">
+          <h2 class="eee-card-title">Atjaunoto ēku karte</h2>
+          <span class="eee-map-note" id="mapMatchNote"></span>
+        </div>
+        <div class="eee-chart-wrap eee-chart-tall">
+          <div id="eeeMap" class="eee-map"></div>
+        </div>
+      </div>
+
+      <!-- ═══════════ IZMAKSAS UZ m² ═══════════ -->
+      <div class="eee-card mb-4">
+        <div class="eee-card-head"><h2 class="eee-card-title">Izmaksas uz m² pēc ēkas atbalsta izsniegšanas gada</h2></div>
+        <p class="eee-hint">
+          Vidējās atjaunošanas izmaksas uz kvadrātmetru gadā, kad piešķirts finansējums.
+          Pārrēķināts ar kadastra ēkas platību, ja ēka atrasta datubāzē.
+        </p>
+        <div class="eee-chart-wrap"><canvas id="costPerM2Chart"></canvas></div>
+      </div>
+
+      <!-- ═══════════ PATĒRIŅŠ + FINANSĒJUMS ═══════════ -->
+      <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-7">
+          <div class="eee-card">
+            <div class="eee-card-head"><h2 class="eee-card-title">Patēriņa dinamika pēc ēkas vecuma</h2></div>
+            <div class="eee-chart-wrap"><canvas id="consumptionChart"></canvas></div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5">
+          <div class="eee-card">
+            <div class="eee-card-head"><h2 class="eee-card-title">Finansējuma struktūra</h2></div>
+            <div class="eee-chart-wrap"><canvas id="financingChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════ TABULA ═══════════ -->
+      <div class="eee-card">
+        <div class="eee-card-head"><h2 class="eee-card-title">Detalizēta projektu tabula</h2></div>
+        <p class="eee-hint">
+          Klikšķini uz adreses, lai atvērtu ēkas detaļu lapu ekufonds.lv. Finanšu aprēķini
+          (kredīts, izmaksas uz dzīvokli) ir aptuveni un paredzēti informatīviem nolūkiem —
+          pieņēmums: 20 gadu aizdevums ar 3,9% gada likmi par īpašnieku līdzfinansējuma daļu.
+        </p>
+        <div class="eee-table-wrap">
+          <table class="eee-table" id="projectsTable">
+            <thead>
+              <tr>
+                <th data-sort="address">Adrese</th>
+                <th data-sort="region">Reģions</th>
+                <th>Programma</th>
+                <th>Sērija</th>
+                <th data-sort="year">Ekspl.</th>
+                <th data-sort="savings">Ietaupījums</th>
+                <th>Patēriņš</th>
+                <th>Dzīvokļi</th>
+                <th data-sort="area">Platība</th>
+                <th data-sort="cost">Kopējās izmaksas</th>
+                <th data-sort="grant">Grants</th>
+                <th>€/m²</th>
+                <th>Kredīts/mēn.</th>
+                <th>Vidēji/dzīvoklim</th>
+              </tr>
+            </thead>
+            <tbody id="projectsTableBody"></tbody>
+          </table>
+        </div>
+        <div class="eee-pagination" id="projectsPagination"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ═══════════ KĀJENE ═══════════ -->
+  <footer id="footer" class="pt-4">
+    <div class="container bg-footer">
+      <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-0">
+          <a class="navbar-brand" href="https://energoefektivakaeka.lv/">
+            <img src="assets/img/logo-footer-balts.webp" alt="Energoefektīvāka ēka" width="150">
+          </a>
+          <div class="d-none d-xl-flex justify-content-end flex-grow-1">
+            <div class="me-xl-4 lc-nav-menu">
+              <ul class="navbar-nav">
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/par-konkursu/" class="nav-link">Par konkursu</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/2026-gads/" class="nav-link">2026. gads</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/objekti/" class="nav-link">Objekti</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/aktuali/" class="nav-link">Aktuāli</a></li>
+                <li class="nav-item"><a href="https://energoefektivakaeka.lv/kontakti/" class="nav-link">Kontakti</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="navbar-socials d-flex">
+            <a href="https://www.facebook.com/energoefektivaka.eka.Latvija/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 28"><path d="M14.984 0.187v4.125h-2.453c-1.922 0-2.281 0.922-2.281 2.25v2.953h4.578l-0.609 4.625h-3.969v11.859h-4.781v-11.859h-3.984v-4.625h3.984v-3.406c0-3.953 2.422-6.109 5.953-6.109 1.687 0 3.141 0.125 3.563 0.187z"></path></svg></a>
+            <a href="https://twitter.com/siltinam" target="_blank" rel="noopener" aria-label="X"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z"></path></svg></a>
+            <a href="https://www.youtube.com/siltinam" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 44.898438 14.5 C 44.5 12.300781 42.601563 10.699219 40.398438 10.199219 C 37.101563 9.5 31 9 24.398438 9 C 17.800781 9 11.601563 9.5 8.300781 10.199219 C 6.101563 10.699219 4.199219 12.199219 3.800781 14.5 C 3.398438 17 3 20.5 3 25 C 3 29.5 3.398438 33 3.898438 35.5 C 4.300781 37.699219 6.199219 39.300781 8.398438 39.800781 C 11.898438 40.5 17.898438 41 24.5 41 C 31.101563 41 37.101563 40.5 40.601563 39.800781 C 42.800781 39.300781 44.699219 37.800781 45.101563 35.5 C 45.5 33 46 29.398438 46.101563 25 C 45.898438 20.5 45.398438 17 44.898438 14.5 Z M 19 32 L 19 18 L 31.199219 25 Z"></path></svg></a>
+            <a href="https://www.instagram.com/dzivosiltak/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26"><path d="M 7.546875 0 C 3.390625 0 0 3.390625 0 7.546875 L 0 18.453125 C 0 22.609375 3.390625 26 7.546875 26 L 18.453125 26 C 22.609375 26 26 22.609375 26 18.453125 L 26 7.546875 C 26 3.390625 22.609375 0 18.453125 0 Z M 7.546875 2 L 18.453125 2 C 21.527344 2 24 4.46875 24 7.546875 L 24 18.453125 C 24 21.527344 21.53125 24 18.453125 24 L 7.546875 24 C 4.472656 24 2 21.53125 2 18.453125 L 2 7.546875 C 2 4.472656 4.46875 2 7.546875 2 Z M 20.5 4 C 19.671875 4 19 4.671875 19 5.5 C 19 6.328125 19.671875 7 20.5 7 C 21.328125 7 22 6.328125 22 5.5 C 22 4.671875 21.328125 4 20.5 4 Z M 13 6 C 9.144531 6 6 9.144531 6 13 C 6 16.855469 9.144531 20 13 20 C 16.855469 20 20 16.855469 20 13 C 20 9.144531 16.855469 6 13 6 Z M 13 8 C 15.773438 8 18 10.226563 18 13 C 18 15.773438 15.773438 18 13 18 C 10.226563 18 8 15.773438 8 13 C 8 10.226563 10.226563 8 13 8 Z"></path></svg></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="row pt-4 pb-5 pb-lg-6">
+        <div class="col-12 col-lg-7">
+          <p class="fw-600 mb-2">Kontakti</p>
+          <div class="d-flex flex-wrap mb-4">
+            <div class="me-4 mb-2">
+              Uldis Andersons<br>
+              +371 29461241, <a class="td-none" href="mailto:uldis.andersons@gmail.com">e-pasts</a>
+            </div>
+            <div class="me-4 mb-2">
+              Inese Bērziņa<br>
+              +371 67013240, <a class="td-none" href="mailto:dzivosiltak@em.gov.lv">e-pasts</a>
+            </div>
+          </div>
+
+          <p class="fw-600 mb-2">Par datiem</p>
+          <p class="eee-footer-note mb-1">
+            Datu avots: Altum / LIAA daudzdzīvokļu ēku energoefektivitātes projekti,
+            sasaistīti ar VZD kadastra datiem.
+          </p>
+          <p class="eee-footer-note mb-0">
+            Sagatavoja <a class="td-none" href="https://ekufonds.lv" target="_blank" rel="noopener">ekufonds.lv</a>.
+            Dati atjaunoti: <span id="eeeGenerets">—</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white">
+      <div class="d-flex justify-content-center">
+        <img class="my-2 img-fluid" src="assets/img/es-logo-josla.png" alt="Latvijas Atveseļošanas fonda un ES logo ansamblis" width="600">
+      </div>
+    </div>
+  </footer>
+
+  <!-- Ielādes indikators -->
+  <div id="eeeLoading" class="eee-loading"><div class="eee-loading-card"><div class="eee-spinner"></div>Ielādē datus…</div></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/eee-dme.js"></script>
+</body>
+</html>
