@@ -25,9 +25,8 @@
      ⚠️ TODO: Niks iedos skaitli. Kamēr null, procentu apakšrinda netiek rādīta. */
   var KOPEJA_EKU_PLATIBA_M2 = null;
 
-  /* Aizdevuma pieņēmumi — identiski api/atjaunotas-analytics.php konstantēm */
-  var LOAN_ANNUAL_RATE = 0.039;
-  var LOAN_YEARS = 20;
+  /* Sērijas grafikā rāda tikai, ja tai ir vismaz tik ēku ar patēriņa datiem */
+  var MIN_EKAS_SERIJA = 5;
 
   var COLORS = {
     darkGreen: '#20542b',
@@ -45,6 +44,7 @@
     listPerPage: 50,
     listSort: 'cost',
     listDir: 'desc',
+    consumptionBy: 'age',
   };
 
   var charts = {};
@@ -143,12 +143,16 @@
     return null;
   }
 
-  /** Ikmēneša anuitātes maksājums — raLoanMonthlyPayment() ekvivalents. */
-  function kreditaMaksajums(pamatsumma) {
-    if (pamatsumma <= 0) return 0;
-    var r = LOAN_ANNUAL_RATE / 12;
-    var n = LOAN_YEARS * 12;
-    return round(pamatsumma * r / (1 - Math.pow(1 + r, -n)), 2);
+  /** Apvieno vienādas sērijas, kas datos rakstītas dažādi ("103" un "103.", "Hruščovka"
+      un "Hruščova tipa ēka", "Specprojekts, 103 modificēta" u.tml.). */
+  function serijasGrupa(series) {
+    var t = String(series == null ? '' : series).replace(/\./g, '').replace(/\s+/g, ' ').trim();
+    if (!t) return null;
+    var n = normalize(t);
+    if (n.indexOf('hrusc') !== -1) return 'Hruščova tipa';
+    if (n.indexOf('specprojekts') === 0) return 'Specprojekts';
+    if (/^316 ?\/ ?318$/.test(t)) return '316/318';
+    return t;
   }
 
   /** Diakritikas-neatkarīga, reģistrnejutīga salīdzināšana — tāpat kā MySQL utf8mb4_unicode_ci. */
@@ -170,7 +174,7 @@
         for (var i = 0; i < dok.lauki.length; i++) p[dok.lauki[i]] = rinda[i];
         /* Iepriekš sagatavotie meklēšanas lauki — lai filtrēšana nav jāatkārto katrā taustiņspiedienā */
         p._search = normalize(p.address_raw) + ' ' + normalize(p.town_raw);
-        p._series = normalize(p.series);
+        p._seriesGroup = serijasGrupa(p.series);
         return p;
       });
       raditGenerets(dok.generets);
@@ -194,22 +198,22 @@
 
   function filtret() {
     var s = normalize(state.search);
-    var ser = normalize(state.series);
 
     return state.visiProjekti.filter(function (p) {
       if (state.region && p.region !== state.region) return false;
       if (state.program && p.program !== state.program) return false;
-      if (ser && p._series.indexOf(ser) === -1) return false;
+      if (state.series && p._seriesGroup !== state.series) return false;
       if (s && p._search.indexOf(s) === -1) return false;
       return true;
     });
   }
 
   function aizpilditFiltrus() {
-    var regioni = {}, programmas = {};
+    var regioni = {}, programmas = {}, serijas = {};
     state.visiProjekti.forEach(function (p) {
       if (p.region) regioni[p.region] = (regioni[p.region] || 0) + 1;
       if (p.program) programmas[p.program] = (programmas[p.program] || 0) + 1;
+      if (p._seriesGroup) serijas[p._seriesGroup] = (serijas[p._seriesGroup] || 0) + 1;
     });
 
     function pecSkaita(obj) {
@@ -230,6 +234,14 @@
       opt.value = p;
       opt.textContent = p + ' (' + fmtInt(programmas[p]) + ')';
       programSelect.appendChild(opt);
+    });
+
+    var seriesSelect = $('seriesSelect');
+    pecSkaita(serijas).forEach(function (s) {
+      var opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s + ' (' + fmtInt(serijas[s]) + ')';
+      seriesSelect.appendChild(opt);
     });
 
     setText('eeeTotalBadge', fmtInt(state.visiProjekti.length) + ' ēkas');
@@ -315,24 +327,6 @@
     };
   }
 
-  /** €/m² pa granta gadiem: rindas attiecība → vidējais gadā (nevis summu dalījums). */
-  function izmaksasPaGadiem(rows) {
-    var pecGada = {};
-    rows.forEach(function (p) {
-      if (p.grant_year === null || p.cost_total === null) return;
-      var platiba = efektivaPlatiba(p);
-      if (!platiba) return;
-      if (!pecGada[p.grant_year]) pecGada[p.grant_year] = { summa: 0, skaits: 0 };
-      pecGada[p.grant_year].summa += p.cost_total / platiba;
-      pecGada[p.grant_year].skaits++;
-    });
-
-    return Object.keys(pecGada).map(Number).sort(function (a, b) { return a - b; })
-      .map(function (gads) {
-        return { year: gads, avg_cost_per_m2: round(pecGada[gads].summa / pecGada[gads].skaits, 2) };
-      });
-  }
-
   /** Patēriņš pa ēkas ekspluatācijas desmitgadēm. */
   function paterinsPaDesmitgadem(rows) {
     var grupas = {};
@@ -353,70 +347,75 @@
       });
   }
 
-  function renderCharts(rows) {
-    var defaults = chartDefaults();
-
-    var paGadiem = izmaksasPaGadiem(rows);
-    if (charts.costPerM2) charts.costPerM2.destroy();
-    charts.costPerM2 = new Chart($('costPerM2Chart'), {
-      type: 'bar',
-      data: {
-        labels: paGadiem.map(function (d) { return String(d.year); }),
-        datasets: [{
-          label: 'Vidējās izmaksas €/m²',
-          data: paGadiem.map(function (d) { return d.avg_cost_per_m2; }),
-          backgroundColor: COLORS.darkGreen,
-          borderRadius: 8,
-        }],
-      },
-      options: Object.assign({}, defaults, { scales: axisOpts('€/m²') }),
+  /** Patēriņš pa sērijām — tikai sērijas ar pietiekami daudz ēkām, sakārtotas pēc skaita. */
+  function paterinsPaSerijam(rows) {
+    var grupas = {};
+    rows.forEach(function (p) {
+      if (!p._seriesGroup) return;
+      if (p.kwh_before === null && p.kwh_after === null) return;
+      if (!grupas[p._seriesGroup]) grupas[p._seriesGroup] = [];
+      grupas[p._seriesGroup].push(p);
     });
 
-    var paDesmitgadem = paterinsPaDesmitgadem(rows);
+    return Object.keys(grupas)
+      .filter(function (s) { return grupas[s].length >= MIN_EKAS_SERIJA; })
+      .sort(function (a, b) { return grupas[b].length - grupas[a].length; })
+      .map(function (s) {
+        return {
+          series: s,
+          count: grupas[s].length,
+          avg_before: avg(grupas[s], 'kwh_before', 1),
+          avg_after: avg(grupas[s], 'kwh_after', 1),
+        };
+      });
+  }
+
+  function renderCharts(rows) {
+    var defaults = chartDefaults();
+    var pecSerijas = state.consumptionBy === 'series';
+
+    setText('consumptionTitle', pecSerijas ? 'Patēriņa dinamika pēc ēkas sērijas' : 'Patēriņa dinamika pēc ēkas vecuma');
+    setText('consumptionHint', pecSerijas
+      ? 'Vidējais siltumenerģijas patēriņš pirms un pēc atjaunošanas pa ēku sērijām. Rādītas sērijas ar vismaz ' +
+        MIN_EKAS_SERIJA + ' ēkām; līdzīgi sēriju nosaukumi apvienoti.'
+      : 'Vidējais siltumenerģijas patēriņš pirms un pēc atjaunošanas pa ēkas ekspluatācijā nodošanas desmitgadēm.');
+
+    var dati, labels, tips;
+    if (pecSerijas) {
+      dati = paterinsPaSerijam(rows);
+      labels = dati.map(function (d) { return d.series + ' (' + fmtInt(d.count) + ')'; });
+      tips = 'bar';
+    } else {
+      dati = paterinsPaDesmitgadem(rows);
+      labels = dati.map(function (d) { return d.decade + 's'; });
+      tips = 'line';
+    }
+
     if (charts.consumption) charts.consumption.destroy();
     charts.consumption = new Chart($('consumptionChart'), {
-      type: 'line',
+      type: tips,
       data: {
-        labels: paDesmitgadem.map(function (d) { return d.decade + 's'; }),
+        labels: labels,
         datasets: [
           {
             label: 'Pirms atjaunošanas',
-            data: paDesmitgadem.map(function (d) { return d.avg_before; }),
+            data: dati.map(function (d) { return d.avg_before; }),
             borderColor: COLORS.orange,
-            backgroundColor: 'rgba(241,80,37,0.15)',
-            tension: 0.3, fill: true,
+            backgroundColor: pecSerijas ? COLORS.orange : 'rgba(241,80,37,0.15)',
+            borderRadius: pecSerijas ? 6 : 0,
+            tension: 0.3, fill: !pecSerijas,
           },
           {
             label: 'Pēc atjaunošanas',
-            data: paDesmitgadem.map(function (d) { return d.avg_after; }),
+            data: dati.map(function (d) { return d.avg_after; }),
             borderColor: COLORS.green,
-            backgroundColor: 'rgba(101,191,59,0.18)',
-            tension: 0.3, fill: true,
+            backgroundColor: pecSerijas ? COLORS.green : 'rgba(101,191,59,0.18)',
+            borderRadius: pecSerijas ? 6 : 0,
+            tension: 0.3, fill: !pecSerijas,
           },
         ],
       },
       options: Object.assign({}, defaults, { scales: axisOpts('kWh/m²') }),
-    });
-
-    var totalInvestment = sum(rows, 'cost_total');
-    var totalGrant = sum(rows, 'grant_amount');
-    var ownShare = Math.max(totalInvestment - totalGrant, 0);
-
-    if (charts.financing) charts.financing.destroy();
-    charts.financing = new Chart($('financingChart'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Sniegtais atbalsts', 'Privātās investīcijas'],
-        datasets: [{ data: [totalGrant, ownShare], backgroundColor: [COLORS.green, COLORS.darkGreen], borderWidth: 0 }],
-      },
-      options: Object.assign({}, defaults, {
-        plugins: Object.assign({}, defaults.plugins, {
-          legend: {
-            position: 'bottom',
-            labels: { color: COLORS.darkGreen, font: { family: "'Montserrat', sans-serif", size: 12 } },
-          },
-        }),
-      }),
     });
   }
 
@@ -508,14 +507,9 @@
   function finanses(p) {
     var platiba = efektivaPlatiba(p);
     var costTotal = p.cost_total;
-    var ownerCost = costTotal !== null ? Math.max(costTotal - (p.grant_amount || 0), 0) : null;
-    var monthly = ownerCost !== null ? kreditaMaksajums(ownerCost) : null;
 
     return {
       cost_per_m2: (costTotal !== null && platiba) ? round(costTotal / platiba, 2) : null,
-      monthly_payment: monthly,
-      avg_apartment_payment: (monthly !== null && p.apartments > 0)
-        ? round(monthly / p.apartments, 2) : null,
     };
   }
 
@@ -535,7 +529,7 @@
     tbody.innerHTML = '';
 
     if (!lapa.length) {
-      tbody.innerHTML = '<tr class="eee-empty-row"><td colspan="14">Nav projektu izvēlētajiem filtriem</td></tr>';
+      tbody.innerHTML = '<tr class="eee-empty-row"><td colspan="12">Nav projektu izvēlētajiem filtriem</td></tr>';
       return;
     }
 
@@ -560,8 +554,6 @@
         '<td class="eee-num">' + (p.cost_total ? fmtEur(p.cost_total) : 'nav datu') + '</td>' +
         '<td class="eee-num">' + (p.grant_amount ? fmtEur(p.grant_amount) : 'nav datu') + '</td>' +
         '<td class="eee-num">' + (f.cost_per_m2 ? fmtEur(f.cost_per_m2) + '/m²' : 'nav datu') + '</td>' +
-        '<td class="eee-num">' + (f.monthly_payment ? fmtEur(f.monthly_payment) : 'nav datu') + '</td>' +
-        '<td class="eee-num">' + (f.avg_apartment_payment ? fmtEur(f.avg_apartment_payment) : 'nav datu') + '</td>' +
       '</tr>';
     }).join('');
 
@@ -625,7 +617,7 @@
 
   function sasaistitFiltrus() {
     [['searchInput', 'search'], ['regionSelect', 'region'],
-     ['programSelect', 'program'], ['seriesInput', 'series']].forEach(function (sasaiste) {
+     ['programSelect', 'program'], ['seriesSelect', 'series']].forEach(function (sasaiste) {
       var el = $(sasaiste[0]);
       if (!el) return;
       el.addEventListener('input', function () {
@@ -639,10 +631,25 @@
       state.search = ''; state.region = ''; state.program = ''; state.series = '';
       state.listPage = 1;
       $('searchInput').value = '';
-      $('seriesInput').value = '';
+      $('seriesSelect').value = '';
       $('regionSelect').value = '';
       $('programSelect').value = '';
       parradit();
+    });
+  }
+
+  function sasaistitPaterinaParslegu() {
+    var pogas = document.querySelectorAll('[data-consumption]');
+    pogas.forEach(function (poga) {
+      poga.addEventListener('click', function () {
+        state.consumptionBy = poga.getAttribute('data-consumption');
+        pogas.forEach(function (b) {
+          var aktiva = b === poga;
+          b.classList.toggle('active', aktiva);
+          b.setAttribute('aria-pressed', aktiva ? 'true' : 'false');
+        });
+        renderCharts(state.atlasitie);
+      });
     });
   }
 
@@ -675,6 +682,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     sasaistitFiltrus();
     sasaistitKartosanu();
+    sasaistitPaterinaParslegu();
     initMap();
 
     ieladetDatus().then(function () {

@@ -480,3 +480,25 @@ a:hover { color: var(--eee-orange); }
 @media (min-width: 992px) {
   .pb-lg-6 { padding-bottom: 5rem; }
 }
+
+/* ─── Patēriņa grafika pārslēgs ─── */
+.eee-toggle {
+  display: inline-flex;
+  border: 1px solid var(--eee-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.eee-toggle-btn {
+  font-family: var(--eee-font);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--eee-green-dark);
+  background: var(--eee-bg);
+  border: none;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+.eee-toggle-btn + .eee-toggle-btn { border-left: 1px solid var(--eee-border); }
+.eee-toggle-btn:hover:not(.active) { color: var(--eee-orange); }
+.eee-toggle-btn.active { background: var(--eee-green-dark); color: #fff; }

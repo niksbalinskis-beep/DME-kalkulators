@@ -128,8 +128,10 @@
             </select>
           </div>
           <div class="col-12 col-lg-2">
-            <label class="eee-filter-label" for="seriesInput">Sērija</label>
-            <input id="seriesInput" class="eee-input" type="text" placeholder="piem. 103, 316" autocomplete="off">
+            <label class="eee-filter-label" for="seriesSelect">Sērija</label>
+            <select id="seriesSelect" class="eee-input">
+              <option value="">Visas sērijas</option>
+            </select>
           </div>
         </div>
         <div class="mt-3">
@@ -192,39 +194,24 @@
         </div>
       </div>
 
-      <!-- ═══════════ IZMAKSAS UZ m² ═══════════ -->
+      <!-- ═══════════ PATĒRIŅŠ ═══════════ -->
       <div class="eee-card mb-4">
-        <div class="eee-card-head"><h2 class="eee-card-title">Izmaksas uz m² pēc ēkas atbalsta izsniegšanas gada</h2></div>
-        <p class="eee-hint">
-          Vidējās atjaunošanas izmaksas uz kvadrātmetru gadā, kad piešķirts finansējums.
-          Pārrēķināts ar kadastra ēkas platību, ja ēka atrasta datubāzē.
-        </p>
-        <div class="eee-chart-wrap"><canvas id="costPerM2Chart"></canvas></div>
-      </div>
-
-      <!-- ═══════════ PATĒRIŅŠ + FINANSĒJUMS ═══════════ -->
-      <div class="row g-4 mb-4">
-        <div class="col-12 col-lg-7">
-          <div class="eee-card">
-            <div class="eee-card-head"><h2 class="eee-card-title">Patēriņa dinamika pēc ēkas vecuma</h2></div>
-            <div class="eee-chart-wrap"><canvas id="consumptionChart"></canvas></div>
+        <div class="eee-card-head">
+          <h2 class="eee-card-title" id="consumptionTitle">Patēriņa dinamika pēc ēkas vecuma</h2>
+          <div class="eee-toggle" role="group" aria-label="Grupēt patēriņu">
+            <button type="button" class="eee-toggle-btn active" data-consumption="age" aria-pressed="true">Pēc ēkas vecuma</button>
+            <button type="button" class="eee-toggle-btn" data-consumption="series" aria-pressed="false">Pēc sērijas</button>
           </div>
         </div>
-        <div class="col-12 col-lg-5">
-          <div class="eee-card">
-            <div class="eee-card-head"><h2 class="eee-card-title">Finansējuma struktūra</h2></div>
-            <div class="eee-chart-wrap"><canvas id="financingChart"></canvas></div>
-          </div>
-        </div>
+        <p class="eee-hint" id="consumptionHint"></p>
+        <div class="eee-chart-wrap"><canvas id="consumptionChart"></canvas></div>
       </div>
 
       <!-- ═══════════ TABULA ═══════════ -->
       <div class="eee-card">
         <div class="eee-card-head"><h2 class="eee-card-title">Detalizēta projektu tabula</h2></div>
         <p class="eee-hint">
-          Klikšķini uz adreses, lai atvērtu ēkas detaļu lapu ekufonds.lv. Finanšu aprēķini
-          (kredīts, izmaksas uz dzīvokli) ir aptuveni un paredzēti informatīviem nolūkiem —
-          pieņēmums: 20 gadu aizdevums ar 3,9% gada likmi par īpašnieku līdzfinansējuma daļu.
+          Klikšķini uz adreses, lai atvērtu ēkas detaļu lapu ekufonds.lv.
         </p>
         <div class="eee-table-wrap">
           <table class="eee-table" id="projectsTable">
@@ -242,8 +229,6 @@
                 <th data-sort="cost">Kopējās izmaksas</th>
                 <th data-sort="grant">Grants</th>
                 <th>€/m²</th>
-                <th>Kredīts/mēn.</th>
-                <th>Vidēji/dzīvoklim</th>
               </tr>
             </thead>
             <tbody id="projectsTableBody"></tbody>
